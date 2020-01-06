@@ -1,2 +1,4 @@
 flask
 flask-restful
+sqlalchemy
+flask-sqlalchemy
