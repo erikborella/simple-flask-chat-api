@@ -2,3 +2,4 @@ flask
 flask-restful
 sqlalchemy
 flask-sqlalchemy
+flask-marshmallow

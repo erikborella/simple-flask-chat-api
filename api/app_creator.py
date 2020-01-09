@@ -1,5 +1,5 @@
 from flask import Flask
-from extensions import db
+from extensions import db, ma
 
 """Create and configure Flask instance"""
 def create_app():
@@ -15,3 +15,4 @@ def register_extension(app):
     #use '[ex].init_app(app)' methods from extensions here
     
     db.init_app(app)
+    ma.init_app(ma)
