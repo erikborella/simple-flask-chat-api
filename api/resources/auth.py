@@ -8,6 +8,8 @@ from extensions import db
 from models import User
 from models_schemas import user_schema
 
+from utils import check_fields
+
 
 """
 Create a new user
@@ -17,41 +19,40 @@ Create a new user
         -email
         -password
 """
+class Users(Resource):
 
-class CreateUser(Resource):
-    
     def is_email_already_in_use(self, email: str) -> bool:
         return User.query.filter(User.email == email).first() is not None
     
-    def post(self):
-        
-        if not 'name' in request.form or \
-           not 'email' in request.form or \
-           not 'password' in request.form:
+    @check_fields(fields=("name", "email", "password"))
+    def post(self, **kwargs):
 
-            return {'message': 'there are fields missing'}, 400
+        fields = kwargs.get('fields')
 
-        else:
-            
-            name = request.form['name']
-            email = request.form['email']
+        name = fields.get('name')
+        email = fields.get('email')
+        password = fields.get('password')
 
-            password = request.form['password']
-            password = generate_password_hash(password)
+        password = generate_password_hash(password)
 
-            if self.is_email_already_in_use(email):
-                return {'message': 'Email already in use'}, 400
+        if self.is_email_already_in_use(email):
+            return {'error': 'Email already in use'}, 400
 
-            user = User(name, email, password)
+        user = User(name, email, password)
 
-            try:
-                db.session.add(user)
-                db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
 
-                return {
-                    'message': 'New user successfully created', 
-                    'data': user_schema.dump(user)
-                    }, 201
-            except:
+            return {
+                'message': 'New user successfully created', 
+                'data': user_schema.dump(user)
+                }, 201
+        except:
                 
-                return {'message': 'Internal error'}, 500
+            return {'message': 'Internal error'}, 500
+
+
+class GetOneUser(Resource):
+    def get(self, user_id):
+        return user_id
