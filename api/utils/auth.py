@@ -1,0 +1,2 @@
+def tess():
+    print("ok")

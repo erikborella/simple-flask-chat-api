@@ -8,7 +8,7 @@ from extensions import db
 from models import User
 from models_schemas import user_schema, users_schemas
 
-from utils import check_fields
+from utils.validators import check_fields
 
 
 """
