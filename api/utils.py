@@ -4,7 +4,7 @@ from functools import wraps
 from flask import request
 
 """ Check if all fields are in form request, if not send a error """
-def check_fields(fields=()):
+def check_fields(fields: tuple=()):
 
     def decorator(f):
 
@@ -22,6 +22,8 @@ def check_fields(fields=()):
 
             fields_with_content: dict = {}
 
+            # check the valid of each field
+            # and add a error if is somenthing wrong
             for field in fields:
                 if field not in request.form:
                     error_message['detail'][field] = "This field is required"
@@ -34,6 +36,7 @@ def check_fields(fields=()):
                 else:
                     fields_with_content[field] = request.form[field]
 
+            # if have some missing field, return the message with 400 response code
             if has_error:
                 return error_message, 400
             else:
