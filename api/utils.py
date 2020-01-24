@@ -17,18 +17,23 @@ def check_fields(fields=()):
                 "detail": {}
             }
 
-            has_missing_fields: bool = False
+            has_error: bool = False
 
             fields_with_content: dict = {}
 
             for field in fields:
                 if field not in request.form:
                     error_message['detail'][field] = "This field is required"
-                    has_missing_fields = True
+                    has_error = True
+
+                elif len(request.form[field]) == 0:
+                    error_message['detail'][field] = "This field cannot be empty"
+                    has_error = True
+
                 else:
                     fields_with_content[field] = request.form[field]
 
-            if has_missing_fields:
+            if has_error:
                 return error_message, 400
             else:
                 kwargs['fields'] = fields_with_content
