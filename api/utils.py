@@ -3,6 +3,7 @@ from functools import wraps
 
 from flask import request
 
+""" Check if all fields are in form request, if not send a error """
 def check_fields(fields=()):
 
     def decorator(f):

@@ -19,12 +19,14 @@ def with_app_context(f):
     return decorated
 
 
+""" drop and create all database tables """
 @with_app_context
 def migrate():
     db.drop_all()
     db.create_all()
 
 
+""" print a list with all tables in database """
 @with_app_context
 def show_tables():
     engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])

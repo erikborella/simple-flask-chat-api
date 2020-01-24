@@ -12,18 +12,19 @@ from utils import check_fields
 
 
 """
-Create a new user
-
-    form fields:
-        -name
-        -email
-        -password
+get: return all users
+post: create a new user
+    *required fileds
+    - name
+    - password
+    - email
 """
 class Users(Resource):
 
     def is_email_already_in_use(self, email: str) -> bool:
         return User.query.filter(User.email == email).first() is not None
 
+    # return a list with all users
     def get(self):
         users = User.query.all()
         return {
@@ -31,15 +32,19 @@ class Users(Resource):
             'data': users_schemas.dump(users)
         }
     
+    # check if all the fields are correct
     @check_fields(fields=("name", "email", "password"))
+    # create a new user
     def post(self, **kwargs):
 
+        # get the fields dict content all fields value 
+        # injected by 'check_fields' decorator
         fields = kwargs.get('fields')
 
         name = fields.get('name')
         email = fields.get('email')
         password = fields.get('password')
-
+    
         password = generate_password_hash(password)
 
         if self.is_email_already_in_use(email):
@@ -47,6 +52,7 @@ class Users(Resource):
 
         user = User(name, email, password)
 
+        # Try to create a new user
         try:
             db.session.add(user)
             db.session.commit()
@@ -59,7 +65,9 @@ class Users(Resource):
                 
             return {'message': 'Internal error'}, 500
 
-
+"""
+get: get one specific user
+"""
 class GetOneUser(Resource):
     def get(self, user_id):
         user = User.query.filter_by(id=user_id).first_or_404("User id cannot be find")
