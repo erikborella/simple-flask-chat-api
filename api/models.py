@@ -7,7 +7,7 @@ class User(db.Model):
     email = db.Column(db.String(500), nullable=False, unique=True)
     password = db.Column(db.String(500), nullable=False)
 
-    image_path = db.Column(db.String(500), nullable=True)
+    image = db.Column(db.String(500), nullable=True)
 
     def __init__(self, name: str, email: str, password: str):
         self.name = name
