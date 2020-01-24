@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 from extensions import db
 
 from models import User
-from models_schemas import user_schema
+from models_schemas import user_schema, users_schemas
 
 from utils import check_fields
 
@@ -23,6 +23,13 @@ class Users(Resource):
 
     def is_email_already_in_use(self, email: str) -> bool:
         return User.query.filter(User.email == email).first() is not None
+
+    def get(self):
+        users = User.query.all()
+        return {
+            'message': 'Users successufully find',
+            'data': users_schemas.dump(users)
+        }
     
     @check_fields(fields=("name", "email", "password"))
     def post(self, **kwargs):
@@ -55,4 +62,8 @@ class Users(Resource):
 
 class GetOneUser(Resource):
     def get(self, user_id):
-        return user_id
+        user = User.query.filter_by(id=user_id).first_or_404("User id cannot be find")
+        return {
+            'message': 'User successfully find',
+            'data': user_schema.dump(user)
+        }
