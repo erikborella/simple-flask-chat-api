@@ -9,7 +9,9 @@ from models import User
 from models_schemas import user_schema, users_schemas
 
 from utils.validators import check_fields
+from utils import auth
 
+import datetime
 
 """
 get: return all users
@@ -57,9 +59,14 @@ class Users(Resource):
             db.session.add(user)
             db.session.commit()
 
+            token = auth.generate_token(user)
+            token = token.decode('UTF-8')
+
             return {
                 'message': 'New user successfully created', 
-                'data': user_schema.dump(user)
+                'data': user_schema.dump(user),
+                'token': token,
+                'exp': str(datetime.datetime.now() + datetime.timedelta(hours=12))
                 }, 201
         except:
                 

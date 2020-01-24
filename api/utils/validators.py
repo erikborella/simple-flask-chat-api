@@ -1,6 +1,8 @@
 import sys
 from functools import wraps
 
+from models import User
+
 from flask import request
 
 """ Check if all fields are in form request, if not send a error """
@@ -45,3 +47,9 @@ def check_fields(fields: tuple=()):
 
         return wrap
     return decorator
+
+
+def is_user_valid_or_raise_error(user: User) -> bool:
+    if not user.name or not user.email or not user.password:
+        raise Exception("User is invalid")
+    return True
