@@ -53,3 +53,10 @@ def is_user_valid_or_raise_error(user: User) -> bool:
     if not user.name or not user.email or not user.password:
         raise Exception("User is invalid")
     return True
+
+
+def is_authorization_fields_valid() -> bool:
+    auth = request.authorization
+    if not auth or not auth.username or not auth.password:
+        return False
+    return True
