@@ -1,6 +1,9 @@
 import jwt
 import datetime
 
+import sys
+from functools import wraps
+
 from config import SECRET_KEY
 
 from models import User
@@ -10,6 +13,7 @@ from utils.validators import is_user_valid_or_raise_error, is_authorization_fiel
 from flask import request
 
 from werkzeug.security import check_password_hash
+
 
 def __generate_token(user: User):
 
@@ -51,3 +55,28 @@ def auth(email=None, password=None):
     else:
 
         return None
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        token = request.args.get('token')
+
+        if not token:
+            return {
+                'error': 'Token is missing'
+            }, 401
+
+        try:
+            data = jwt.decode(token, SECRET_KEY)
+            user: User = User.query.filter_by(email=data['email']).first()
+
+        except:
+            return {
+                'error': 'Token is invalid or expired'
+            }, 401
+
+        kwargs['user'] = user
+        return f(*args, **kwargs)
+    return decorated
