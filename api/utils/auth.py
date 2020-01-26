@@ -11,7 +11,7 @@ from flask import request
 
 from werkzeug.security import check_password_hash
 
-def generate_token(user: User):
+def __generate_token(user: User):
 
     is_user_valid_or_raise_error(user)
 
@@ -27,32 +27,27 @@ def generate_token(user: User):
 
     return token
 
-def authentication_error():
-    return {
-            'error': 'could not verify', 
-            'WWW-Authenticate': 'Basic auth="Login required"'
-        }, 401
 
-def auth():
+def auth(email=None, password=None):
 
-    if not is_authorization_fields_valid():
-        return authentication_error()
-    
-    auth = request.authorization
+    if not email or not password:
+        if not is_authorization_fields_valid():
+            return None
+        else:
+            email = request.authorization.username
+            password = request.authorization.password
 
-    user = user = User.query.filter_by(email=auth.username).first_or_404("User id cannot be find")
+    user = User.query.filter_by(email=email).first_or_404("Email or password is invalid")
 
-    if user and check_password_hash(user.password, auth.password):
+    print(password)
 
-        token = generate_token(user)
+    if user and check_password_hash(user.password, password):
+
+        token = __generate_token(user)
         token = token.decode('UTF-8')
 
-        return {
-            'message': 'Successfully authenticate',
-            'token': token,
-            'exp': str(datetime.datetime.now() + datetime.timedelta(hours=12))
-        }
+        return token
 
     else:
 
-        return authentication_error()
+        return None

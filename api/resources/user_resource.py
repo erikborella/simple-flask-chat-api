@@ -47,27 +47,25 @@ class Users(Resource):
         email = fields.get('email')
         password = fields.get('password')
     
-        password = generate_password_hash(password)
-
         if self.is_email_already_in_use(email):
             return {'error': 'Email already in use'}, 400
 
-        user = User(name, email, password)
+        user = User(name, email, generate_password_hash(password))
 
         # Try to create a new user
         try:
             db.session.add(user)
             db.session.commit()
 
-            token = auth.generate_token(user)
-            token = token.decode('UTF-8')
-
+            token = auth.auth(email=email, password=password)
+            
             return {
                 'message': 'New user successfully created', 
                 'data': user_schema.dump(user),
                 'token': token,
                 'exp': str(datetime.datetime.now() + datetime.timedelta(hours=12))
                 }, 201
+
         except:
                 
             return {'message': 'Internal error'}, 500
