@@ -43,8 +43,6 @@ def auth(email=None, password=None):
 
     user = User.query.filter_by(email=email).first_or_404("Email or password is invalid")
 
-    print(password)
-
     if user and check_password_hash(user.password, password):
 
         token = __generate_token(user)
@@ -61,7 +59,8 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        token = request.args.get('token')
+        token = request.headers.get('Authorization')
+        token = token.replace("Bearer ", "")
 
         if not token:
             return {
