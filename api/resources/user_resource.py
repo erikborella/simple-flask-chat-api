@@ -1,7 +1,13 @@
-from flask_restful import Resource
+import os
+import urllib.request
+
+from flask_restful import Resource, reqparse
 from flask import request
 
+import werkzeug
+
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 
 from extensions import db
 
@@ -10,6 +16,8 @@ from models_schemas import user_schema, users_schemas
 
 from utils.validators import check_fields
 from utils import auth
+
+from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 
 import datetime
 
@@ -80,3 +88,52 @@ class GetOneUser(Resource):
             'message': 'User successfully find',
             'data': user_schema.dump(user)
         }
+
+
+class Image(Resource):
+
+    def allowed_file(self, filename: str) -> bool:
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    
+    def get_file_extension(self, filename: str) -> str:
+        return filename.split('.')[-1]
+
+    def remove_email_domain(self, filename: str) -> str:
+        return filename.replace('.com', '')
+
+
+    @auth.token_required
+    def post(self, **kwargs):
+        user: User = kwargs.get('user')
+
+        if 'file' not in request.files:
+            return {
+                'error': 'No file part in the request'
+            }, 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            return{
+                'error': 'No file selected for uploading'
+            }, 400
+
+        if file and self.allowed_file(file.filename):
+
+            filename = "%s.%s" % (user.email, self.get_file_extension(file.filename))
+            filename = self.remove_email_domain(filename)
+            filename = secure_filename(filename)
+
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+
+            user.image = "public/%s" % filename
+            db.session.commit()
+
+            return {
+                'message': 'File successfully uploaded'
+            }, 201
+
+        else:
+            return {
+                'error': 'allowed file types are jpg, jpeg and png'
+            }, 400
