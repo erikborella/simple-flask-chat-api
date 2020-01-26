@@ -7,4 +7,6 @@ from utils.auth import auth, token_required
 class Auth(Resource):
 
     def post(self):
-        return auth()
+        return {
+            'token': auth()
+        }

@@ -34,7 +34,10 @@ def auth(email=None, password=None):
 
     if not email or not password:
         if not is_authorization_fields_valid():
-            return None
+            return {
+                'error': 'Invalid payload',
+                'detail': 'There are fields missing'
+            }
         else:
             email = request.authorization.username
             password = request.authorization.password
@@ -50,7 +53,9 @@ def auth(email=None, password=None):
 
     else:
 
-        return None
+        return {
+            'error': 'Email or passowrd is invalid'
+        }
 
 
 def token_required(f):
