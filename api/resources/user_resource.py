@@ -34,13 +34,14 @@ class Users(Resource):
     def is_email_already_in_use(self, email: str) -> bool:
         return User.query.filter(User.email == email).first() is not None
 
-    # return a list with all users
-    def get(self):
-        users = User.query.all()
+    @auth.token_required
+    def get(self, **kwargs):
+        user = kwargs.get('user')
         return {
-            'message': 'Users successufully find',
-            'data': users_schemas.dump(users)
+            'message': 'User successfuly find',
+            'data': user_schema.dump(user)
         }
+
     
     # check if all the fields are correct
     @check_fields(fields=("name", "email", "password"))
@@ -87,6 +88,16 @@ class GetOneUser(Resource):
         return {
             'message': 'User successfully find',
             'data': user_schema.dump(user)
+        }
+
+
+class GetAllUsers(Resource):
+    # return a list with all users
+    def get(self):
+        users = User.query.all()
+        return {
+            'message': 'Users successufully find',
+            'data': users_schemas.dump(users)
         }
 
 
