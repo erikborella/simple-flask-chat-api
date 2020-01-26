@@ -22,7 +22,7 @@ def __generate_token(user: User):
     token = jwt.encode(
         {
             'email': user.email,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=12)
         },
         SECRET_KEY
     )
