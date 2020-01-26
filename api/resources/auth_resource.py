@@ -8,8 +8,3 @@ class Auth(Resource):
 
     def post(self):
         return auth()
-
-    @token_required
-    def get(self, **kwargs):
-        user = kwargs.get('user')
-        return user.name
