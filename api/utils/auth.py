@@ -21,10 +21,8 @@ def __generate_token(user: User):
 
     token = jwt.encode(
         {
-            'name': user.name,
             'email': user.email,
-            'image': user.image,
-            'exp': datetime.datetime.now() + datetime.timedelta(hours=12)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         },
         SECRET_KEY
     )
