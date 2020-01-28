@@ -7,7 +7,7 @@ from extensions import db
 from sqlalchemy import create_engine
 
 """Import all models here to allow the migration"""
-from models import User, Room
+from models import User, Room, Participant, Message
 
 
 """Decorator that create app context"""

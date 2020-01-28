@@ -33,10 +33,10 @@ class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('participant', lazy=True))
+    user = db.relationship('User', backref=db.backref('participate', lazy=True))
 
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
-    room = db.relationship('Room', backref=db.backref('participant', lazy=True))
+    room = db.relationship('Room', backref=db.backref('participants', lazy=True))
 
     def __init__(self, user, room):
         self.user = user
@@ -52,10 +52,10 @@ class Message(db.Model):
     message = db.Column(db.String(255), nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('message', lazy=True))
+    user = db.relationship('User', backref=db.backref('messages', lazy=True))
 
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
-    room = db.relationship('Room', backref=db.backref('message', lazy=True))
+    room = db.relationship('Room', backref=db.backref('messages', lazy=True))
 
     def __init__(self, message, user, room):
         self.message = message
