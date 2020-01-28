@@ -27,3 +27,41 @@ class Room(db.Model):
 
     def __repr__(self):
         return "<Room: %r>" % self.name
+
+
+class Participant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('participant', lazy=True))
+
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+    room = db.relationship('Room', backref=db.backref('participant', lazy=True))
+
+    def __init__(self, user, room):
+        self.user = user
+        self.room = room
+
+    def __repr__(self):
+        return "<Participant: %r:%r>" % (self.user, self.room)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    message = db.Column(db.String(255), nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('message', lazy=True))
+
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+    room = db.relationship('Room', backref=db.backref('message', lazy=True))
+
+    def __init__(self, message, user, room):
+        self.message = message
+
+        self.user = user
+        self.room = room
+
+    def __repr__(self):
+        return "<Message: %r:%r=%r>" % (self.user, self.room, self.message)
