@@ -1,7 +1,0 @@
-flask
-flask-restful
-sqlalchemy
-flask-sqlalchemy
-flask-marshmallow
-marshmallow_sqlalchemy
-pyjwt
