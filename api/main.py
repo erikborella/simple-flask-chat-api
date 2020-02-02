@@ -5,7 +5,7 @@ from flask import send_from_directory
 
 from resources.user_resource import Users, GetOneUser, GetAllUsers, Image
 from resources.auth_resource import Auth
-from resources.room_resource import Rooms
+from resources.room_resource import Rooms, GetOneRoom, GetAllRooms
 
 
 app = create_app()
@@ -19,6 +19,8 @@ api.add_resource(GetAllUsers, '/api/users')
 api.add_resource(Auth, '/api/auth')
 
 api.add_resource(Rooms, '/api/room')
+api.add_resource(GetOneRoom, '/api/room/<room_id>')
+api.add_resource(GetAllRooms, '/api/rooms')
 
 if __name__ == "__main__":
     app.run()

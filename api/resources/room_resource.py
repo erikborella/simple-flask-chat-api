@@ -3,7 +3,7 @@ from flask_restful import Resource
 from werkzeug.security import generate_password_hash
 
 from models import Room, Participant
-from models_schemas import room_schema, participant_schema
+from models_schemas import room_schema, rooms_schemas, participant_schema
 
 from extensions import db
 
@@ -58,3 +58,29 @@ class Rooms(Resource):
         except:
             
             return {'message': 'Internal error'}, 500
+
+
+"""
+get: return a specific room
+"""
+class GetOneRoom(Resource):
+
+    def get(self, room_id):
+        room = Room.query.filter_by(id=room_id).first_or_404("Room id cannot be find")
+        return {
+            'message': 'Room successfully find',
+            'data': room_schema.dump(room)
+        }
+
+
+"""
+get: return a list with all rooms
+"""
+class GetAllRooms(Resource):
+
+    def get(self):
+        rooms = Room.query.all()
+        return {
+            'message': 'Rooms successfully find',
+            'data': rooms_schemas.dump(rooms)
+        }
