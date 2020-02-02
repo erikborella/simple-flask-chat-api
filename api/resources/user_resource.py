@@ -27,13 +27,14 @@ post: create a new user
     *required fileds
     - name
     - password
-    - email
+    - email (unique)
 """
 class Users(Resource):
 
     def is_email_already_in_use(self, email: str) -> bool:
         return User.query.filter(User.email == email).first() is not None
 
+    # return the actual user with token
     @auth.token_required
     def get(self, **kwargs):
         user = kwargs.get('user')
@@ -91,6 +92,9 @@ class GetOneUser(Resource):
         }
 
 
+"""
+get: get all users
+"""
 class GetAllUsers(Resource):
     # return a list with all users
     def get(self):
@@ -100,12 +104,15 @@ class GetAllUsers(Resource):
             'data': users_schemas.dump(users)
         }
 
-
+"""
+post: add a user image
+"""
 class Image(Resource):
 
+    # check if the file extensions is allowed
     def allowed_file(self, filename: str) -> bool:
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-    
+
     def get_file_extension(self, filename: str) -> str:
         return filename.split('.')[-1]
 
@@ -113,6 +120,7 @@ class Image(Resource):
         return filename.replace('.com', '')
 
 
+    # add a user image
     @auth.token_required
     def post(self, **kwargs):
         user: User = kwargs.get('user')
@@ -135,8 +143,10 @@ class Image(Resource):
             filename = self.remove_email_domain(filename)
             filename = secure_filename(filename)
 
+            # save the file in public/
             file.save(os.path.join(UPLOAD_FOLDER, filename))
 
+            # add the path of image in user data
             user.image = "public/%s" % filename
             db.session.commit()
 

@@ -10,11 +10,24 @@ from extensions import db
 from utils.validators import check_fields
 from utils.auth import token_required
 
+
+"""
+post: create a new room
+    *required fileds
+    - name (unique)
+    - password
+"""
 class Rooms(Resource):
 
     def is_room_name_already_in_use(self, name: str) -> bool:
         return Room.query.filter(Room.name == name).first() is not None
 
+    @token_required
+    def get(self, **kwargs):
+        
+        pass
+
+    # create a new room
     @token_required
     @check_fields(fields=("name", "password"))
     def post(self, **kwargs):
