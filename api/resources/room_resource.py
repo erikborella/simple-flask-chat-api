@@ -1,6 +1,6 @@
 from flask_restful import Resource
 
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import Room, Participant
 from models_schemas import room_schema, rooms_schemas, participant_schema
@@ -84,3 +84,47 @@ class GetAllRooms(Resource):
             'message': 'Rooms successfully find',
             'data': rooms_schemas.dump(rooms)
         }
+
+"""
+post: enter in a room
+"""
+class EnterRoom(Resource):
+
+    def is_user_already_participating(self, user, room_id):
+        return Participant.query.filter_by(user=user, room_id=room_id).first() is not None
+
+
+    @token_required
+    @check_fields(fields=('room_id', 'password'))
+    def post(self, **kwargs):
+        user = kwargs.get('user')
+
+        fields = kwargs.get('fields')
+
+        room_id = fields.get('room_id')
+        password = fields.get('password')
+
+        room = Room.query.filter_by(id=room_id).first_or_404("Room id is invalid")
+
+        if self.is_user_already_participating(user, room_id):
+            return {'message': 'you already is a participant'}, 403
+        
+        if check_password_hash(room.password, password):
+            participant = Participant(user, room)
+
+            try:
+                db.session.add(participant)
+                db.session.commit()
+
+                return {
+                    'message': 'successfully enter in the room',
+                    'data': participant_schema.dump(participant)
+                }
+
+            except:
+                return {'message': 'Internal error'}, 500
+
+        else:
+            return {'message': 'room password is invalid'}, 403
+
+        pass

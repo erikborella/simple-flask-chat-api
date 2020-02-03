@@ -24,8 +24,8 @@ def check_fields(fields: tuple=()):
 
             fields_with_content: dict = {}
 
-            # check the valid of each field
-            # and add a error if is somenthing wrong
+            # checks the validity of each field
+            # and add a error if is something wrong
             for field in fields:
                 if field not in request.form:
                     error_message['detail'][field] = "This field is required"
