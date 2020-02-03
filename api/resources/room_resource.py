@@ -109,6 +109,7 @@ class EnterRoom(Resource):
         if self.is_user_already_participating(user, room_id):
             return {'message': 'you already is a participant'}, 403
         
+        # check password and try to create a participant
         if check_password_hash(room.password, password):
             participant = Participant(user, room)
 
