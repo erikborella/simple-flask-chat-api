@@ -1,31 +1,44 @@
 from extensions import ma
+from marshmallow import fields
 
 """ Define all database Shemas to allow json serialissasion """
 
 class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name', 'email', 'image')
+
+    id = fields.Integer()
+    name = fields.String()
+    email = fields.String()
+    image = fields.String()
 
 user_schema = UserSchema()
 users_schemas = UserSchema(many=True)
 
-class RoomSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name')
-
-room_schema = RoomSchema()
-rooms_schemas = RoomSchema(many=True)
-
 class ParticipantSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'user_id', 'room_id')
+
+    id = fields.Integer()
+    user = fields.Nested(UserSchema)
+    room_id = fields.Integer()
 
 participant_schema = ParticipantSchema()
 participants_schemas = ParticipantSchema(many=True)
 
+
+class RoomSchema(ma.Schema):
+
+    id = fields.Integer()
+    name = fields.String()
+    participants = fields.List(fields.Nested(ParticipantSchema))
+
+
+room_schema = RoomSchema()
+rooms_schemas = RoomSchema(many=True)
+
 class MessageSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'message', 'user_id', 'room_id')
+
+    id = fields.Integer()
+    message = fields.String()
+    user = fields.Nested(UserSchema)
+    room = fields.Nested(RoomSchema)
 
 message_schema = MessageSchema()
 messages_schemas = MessageSchema(many=True)
