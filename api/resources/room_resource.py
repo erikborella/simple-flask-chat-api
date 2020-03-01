@@ -146,3 +146,33 @@ class EnterRoom(Resource):
             return {'message': 'room password is invalid'}, 403
 
         pass
+
+
+class LeaveRoom(Resource):
+
+    def find_participant(self, user, room_id):
+
+        for participant in user.participate:
+            if int(participant.room.id) == int(room_id):
+                return participant
+            
+        return None
+
+    @token_required
+    def get(self, room_id, **kwargs):
+        user = kwargs.get('user')
+
+        participant = self.find_participant(user, room_id)
+
+        if not participant:
+            return { 'message': "you don't are a participant of this room" }, 403
+        
+        try:
+
+            db.session.delete(participant)
+            db.session.commit()
+
+            return {'message': 'you leave this room successfully'}
+
+        except:
+             return {'message': 'Internal error'}, 500
