@@ -85,6 +85,23 @@ class GetAllRooms(Resource):
             'data': rooms_schemas.dump(rooms)
         }
 
+
+class GetParticipatingRooms(Resource):
+
+    @token_required
+    def get(self, **kwargs):
+        user = kwargs.get('user')
+
+        rooms: list = []
+        
+        for participant in user.participate:
+            rooms.append(participant.room)
+
+        return {
+            'message': "Rooms successfully find",
+            'data': rooms_schemas.dump(rooms)
+        }
+
 """
 post: enter in a room
 """
