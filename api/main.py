@@ -8,7 +8,7 @@ from resources.auth_resource import Auth
 from resources.room_resource import Rooms, GetOneRoom, GetAllRooms, EnterRoom, \
                                     GetParticipatingRooms, LeaveRoom
 
-from resources.message_resource import Messages
+from resources.message_resource import Messages, GetMessages
 
 
 app = create_app()
@@ -30,6 +30,7 @@ api.add_resource(EnterRoom, '/api/room/enter')
 api.add_resource(LeaveRoom, '/api/room/leave/<room_id>')
 
 api.add_resource(Messages, '/api/message')
+api.add_resource(GetMessages, '/api/message/<room_id>')
 
 
 

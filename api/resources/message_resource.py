@@ -3,20 +3,19 @@ from flask_restful import Resource
 from extensions import db
 
 from models import Room, Message
-from models_schemas import message_schema
+from models_schemas import message_schema, messages_schemas
 
 from utils.validators import check_fields
 from utils.auth import token_required
 
 class Messages(Resource):
 
-    def check_if_user_is_a_participant(self, user, room):
+    def is_user_a_room_participant(self, user, room):
         
         for participant in room.participants:
             if user.id == participant.user.id:
 
                 return True
-
 
     @token_required
     @check_fields(fields=('room_id', 'message'))
@@ -31,7 +30,7 @@ class Messages(Resource):
 
         room = Room.query.filter_by(id=room_id).first_or_404("Room id cannot be find")
 
-        if not self.check_if_user_is_a_participant(user, room):
+        if not self.is_user_a_room_participant(user, room):
             return { 'message': "you don't are a participant of this room" }, 403
 
         try:
@@ -49,4 +48,29 @@ class Messages(Resource):
         except:
             return {'message': 'Internal error'}, 500
 
-        pass
+
+class GetMessages(Resource):
+
+    def is_user_a_room_participant(self, user, room):
+        
+        for participant in room.participants:
+            if user.id == participant.user.id:
+
+                return True
+
+    @token_required
+    def get(self, room_id, **kwargs):
+        user = kwargs.get('user')
+
+        room = Room.query.filter_by(id=room_id).first_or_404("Room id cannot be find")
+
+        if not self.is_user_a_room_participant(user, room):
+            return { 'message': "you don't are a participant of this room" }, 403
+
+        messages = room.messages
+
+        return {
+            'message': 'Messages successfully find',
+            'data': messages_schemas.dump(messages)
+        }
+    
