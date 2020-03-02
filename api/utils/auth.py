@@ -4,7 +4,7 @@ import datetime
 import sys
 from functools import wraps
 
-from config import SECRET_KEY
+from config import SECRET_KEY, DEBUG
 
 from models import User
 
@@ -19,13 +19,25 @@ def __generate_token(user: User):
 
     is_user_valid_or_raise_error(user)
 
-    token = jwt.encode(
-        {
-            'email': user.email,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=12)
-        },
-        SECRET_KEY
-    )
+    if DEBUG:
+
+        token = jwt.encode(
+            {
+                'email': user.email,
+                "debug token": True
+            },
+            SECRET_KEY
+        )
+        
+    else:
+
+        token = jwt.encode(
+            {
+                'email': user.email,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=12)
+            },
+            SECRET_KEY
+        )
 
     return token
 
