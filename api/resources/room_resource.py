@@ -85,7 +85,9 @@ class GetAllRooms(Resource):
             'data': rooms_schemas.dump(rooms)
         }
 
-
+"""
+get: return a list with the rooms that you participate
+"""
 class GetParticipatingRooms(Resource):
 
     @token_required
@@ -147,7 +149,9 @@ class EnterRoom(Resource):
 
         pass
 
-
+"""
+get: leave a room
+"""
 class LeaveRoom(Resource):
 
     def find_participant(self, user, room_id):
