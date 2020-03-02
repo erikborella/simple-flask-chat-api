@@ -22,23 +22,22 @@ class ParticipantSchema(ma.Schema):
 participant_schema = ParticipantSchema()
 participants_schemas = ParticipantSchema(many=True)
 
+class MessageSchema(ma.Schema):
+
+    id = fields.Integer()
+    message = fields.String()
+    user = fields.Nested(UserSchema)
+
+message_schema = MessageSchema()
+messages_schemas = MessageSchema(many=True)
 
 class RoomSchema(ma.Schema):
 
     id = fields.Integer()
     name = fields.String()
     participants = fields.List(fields.Nested(ParticipantSchema))
+    messages = fields.List(fields.Nested(MessageSchema))
 
 
 room_schema = RoomSchema()
 rooms_schemas = RoomSchema(many=True)
-
-class MessageSchema(ma.Schema):
-
-    id = fields.Integer()
-    message = fields.String()
-    user = fields.Nested(UserSchema)
-    room = fields.Nested(RoomSchema)
-
-message_schema = MessageSchema()
-messages_schemas = MessageSchema(many=True)
