@@ -74,14 +74,12 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        token = request.headers.get('Authorization')
+        token = request.cookies.get('access_token')
 
         if not token:
             return {
                 'error': 'Token is missing'
             }, 401
-
-        token = token.replace("Bearer ", "")
 
         try:
             data = jwt.decode(token, SECRET_KEY)
