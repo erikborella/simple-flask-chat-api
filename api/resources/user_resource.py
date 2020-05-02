@@ -2,7 +2,7 @@ import os
 import urllib.request
 
 from flask_restful import Resource, reqparse
-from flask import request
+from flask import request, make_response
 
 import werkzeug
 
@@ -68,13 +68,16 @@ class Users(Resource):
             db.session.commit()
 
             token = auth.auth(email=email, password=password)
-            
-            return {
+
+            response = make_response({
                 'message': 'New user successfully created', 
                 'data': user_schema.dump(user),
-                'token': token,
                 'exp': str(datetime.datetime.now() + datetime.timedelta(hours=12))
-                }, 201
+                }, 201)
+
+            response.set_cookie('access_token', token, httponly=True)
+
+            return response
 
         except:
                 
