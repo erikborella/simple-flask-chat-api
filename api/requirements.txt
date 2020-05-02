@@ -6,3 +6,4 @@ flask-socketio
 sqlalchemy
 marshmallow_sqlalchemy
 pyjwt
+eventlet

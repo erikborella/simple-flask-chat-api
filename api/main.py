@@ -10,6 +10,8 @@ from resources.room_resource import Rooms, GetOneRoom, GetAllRooms, EnterRoom, \
 
 from resources.message_resource import Messages, GetMessages
 
+from extensions import socketio
+
 
 app = create_app()
 api = Api(app)
@@ -34,7 +36,5 @@ api.add_resource(Messages, '/api/message')
 api.add_resource(GetMessages, '/api/message/<room_id>')
 
 
-
-
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app, host='0.0.0.0', port=5000)
