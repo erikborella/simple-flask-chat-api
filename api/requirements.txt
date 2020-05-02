@@ -1,7 +1,8 @@
 flask
 flask-restful
-sqlalchemy
 flask-sqlalchemy
 flask-marshmallow
+flask-socketio
+sqlalchemy
 marshmallow_sqlalchemy
 pyjwt
