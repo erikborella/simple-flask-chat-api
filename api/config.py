@@ -6,3 +6,5 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///database/db.db'
 
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
 UPLOAD_FOLDER = 'public/'
+
+TOKEN_NAME = 'access_token'

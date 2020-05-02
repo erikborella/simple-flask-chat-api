@@ -4,6 +4,8 @@ from flask import request, make_response
 
 from utils.auth import auth, token_required, token_required
 
+from config import TOKEN_NAME
+
 
 """
 post: authenticates the user and return a authenciation token
@@ -15,7 +17,7 @@ class Auth(Resource):
 
         response = make_response({'message': 'successfuly loged'})
 
-        response.set_cookie('access_token', token, httponly=True)
+        response.set_cookie(TOKEN_NAME, token, httponly=True)
 
         return response
 
@@ -28,6 +30,6 @@ class Logout(Resource):
             'message': 'successfully logout'
         })
 
-        response.set_cookie('access_token', '', expires=0)
+        response.set_cookie(TOKEN_NAME, '', expires=0)
 
         return response

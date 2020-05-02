@@ -17,7 +17,7 @@ from models_schemas import user_schema, users_schemas
 from utils.validators import check_fields
 from utils import auth
 
-from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, TOKEN_NAME
 
 import datetime
 
@@ -75,7 +75,7 @@ class Users(Resource):
                 'exp': str(datetime.datetime.now() + datetime.timedelta(hours=12))
                 }, 201)
 
-            response.set_cookie('access_token', token, httponly=True)
+            response.set_cookie(TOKEN_NAME, token, httponly=True)
 
             return response
 
