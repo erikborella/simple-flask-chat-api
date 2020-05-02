@@ -4,7 +4,7 @@ from flask_restful import Api
 from flask import send_from_directory
 
 from resources.user_resource import Users, GetOneUser, GetAllUsers, Image
-from resources.auth_resource import Auth
+from resources.auth_resource import Auth, Logout
 from resources.room_resource import Rooms, GetOneRoom, GetAllRooms, EnterRoom, \
                                     GetParticipatingRooms, LeaveRoom
 
@@ -20,6 +20,7 @@ api.add_resource(Image, '/api/user/image')
 api.add_resource(GetAllUsers, '/api/users')
 
 api.add_resource(Auth, '/api/auth')
+api.add_resource(Logout, '/api/auth/logout')
 
 api.add_resource(Rooms, '/api/room')
 api.add_resource(GetOneRoom, '/api/room/<room_id>')
