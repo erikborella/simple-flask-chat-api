@@ -1,7 +1,8 @@
 from app_creator import create_app
-from flask_restful import Api
 
 from flask import send_from_directory
+from flask_restful import Api
+from flask_cors import CORS
 
 from resources.user_resource import Users, GetOneUser, GetAllUsers, Image
 from resources.auth_resource import Auth, Logout
@@ -14,6 +15,7 @@ from extensions import socketio
 
 
 app = create_app()
+CORS(app, supports_credentials=True)
 api = Api(app)
 
 api.add_resource(Users, '/api/user')
