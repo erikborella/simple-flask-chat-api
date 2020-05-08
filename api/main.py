@@ -15,7 +15,7 @@ from extensions import socketio
 
 
 app = create_app()
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "*"}})
 api = Api(app)
 
 api.add_resource(Users, '/api/user')
