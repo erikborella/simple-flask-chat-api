@@ -15,11 +15,17 @@ class Auth(Resource):
     def post(self):        
         token = auth()
 
-        response = make_response({'message': 'successfuly loged'})
+        if type(token) == str:
 
-        response.set_cookie(TOKEN_NAME, token, httponly=True)
+            response = make_response({'message': 'successfuly loged'})
 
-        return response
+            response.set_cookie(TOKEN_NAME, token, httponly=True)
+
+            return response
+        
+        else:
+
+            return token, 401
 
 
 class Logout(Resource):
